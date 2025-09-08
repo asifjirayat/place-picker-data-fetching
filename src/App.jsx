@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import Places from "./components/Places.jsx";
 import Modal from "./components/Modal.jsx";
 import DeleteConfirmation from "./components/DeleteConfirmation.jsx";
@@ -11,6 +11,19 @@ const App = () => {
   const [userPlaces, setUserPlaces] = useState([]);
   const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState();
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchUserPlaces = async () => {
+      const response = await fetch("http://localhost:3000/user-places");
+      const resData = await response.json();
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch places...");
+      }
+      setUserPlaces(resData.places);
+    };
+    fetchUserPlaces();
+  }, []);
 
   const handleStartRemovePlace = (place) => {
     setModalIsOpen(true);
